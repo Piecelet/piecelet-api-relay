@@ -26,6 +26,16 @@ const proxyFrodo = async (c: import('hono').Context) => {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF XWEB/8391'
   )
   headers.set('Accept-Language', 'zh-CN,zh;q=0.9,en;q=0.8')
+  // Add a random Douban bid cookie per request
+  const genBid = (len = 11) => {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-'
+    const bytes = new Uint8Array(len)
+    crypto.getRandomValues(bytes)
+    let out = ''
+    for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length]
+    return out
+  }
+  headers.set('Cookie', `bid=${genBid()}`)
 
   const method = c.req.method
   const hasBody = !['GET', 'HEAD'].includes(method)

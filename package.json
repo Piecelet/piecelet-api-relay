@@ -1,5 +1,5 @@
 {
-  "name": "relay",
+  "name": "piecelet-api-relay",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

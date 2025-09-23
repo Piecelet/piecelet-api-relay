@@ -65,13 +65,14 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
 - Deploy: `pnpm deploy`
 - Wrangler config: `wrangler.jsonc` (name, main, compatibility_date).
 - GitHub Actions (optional): CI deploy on push to `main` via `.github/workflows/deploy.yml`.
-  - Required GitHub repository secrets:
-    - `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare Account ID
-    - `CLOUDFLARE_API_TOKEN` — API token with permissions: Account.Workers Scripts:Edit, Account.Workers Routes:Edit (and related Workers permissions)
-    - Provider secrets (with prefix to avoid collisions):
+  - Required GitHub repository credentials:
+    - Secrets:
+      - `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare Account ID
+      - `CLOUDFLARE_API_TOKEN` — API token with Workers permissions
+    - Provider values (you can set as Variables or Secrets):
       - `RELAY_METACRITIC_KEY`, `RELAY_DOUBAN_FRODO_KEY`, `RELAY_TMDB_KEY`, `RELAY_OMDB_KEY`
       - Optional: `RELAY_METACRITIC_UA`
-    - The workflow maps these prefixed GitHub Secrets to Worker Secrets named
+    - The workflow maps these prefixed GitHub Variables/Secrets to Worker Secrets named
       `METACRITIC_KEY`, `DOUBAN_FRODO_KEY`, `TMDB_KEY`, `OMDB_KEY`, and optional `METACRITIC_UA`.
   - The workflow syncs these GH Secrets to Cloudflare Worker Secrets before deploying.
 

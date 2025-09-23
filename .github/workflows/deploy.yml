@@ -38,11 +38,11 @@ jobs:
       - name: Sync Wrangler secrets to Cloudflare
         shell: bash
         env:
-          METACRITIC_KEY: ${{ secrets.RELAY_METACRITIC_KEY }}
-          METACRITIC_UA: ${{ secrets.RELAY_METACRITIC_UA }}
-          DOUBAN_FRODO_KEY: ${{ secrets.RELAY_DOUBAN_FRODO_KEY }}
-          TMDB_KEY: ${{ secrets.RELAY_TMDB_KEY }}
-          OMDB_KEY: ${{ secrets.RELAY_OMDB_KEY }}
+          METACRITIC_KEY: ${{ vars.RELAY_METACRITIC_KEY || secrets.RELAY_METACRITIC_KEY }}
+          METACRITIC_UA: ${{ vars.RELAY_METACRITIC_UA || secrets.RELAY_METACRITIC_UA }}
+          DOUBAN_FRODO_KEY: ${{ vars.RELAY_DOUBAN_FRODO_KEY || secrets.RELAY_DOUBAN_FRODO_KEY }}
+          TMDB_KEY: ${{ vars.RELAY_TMDB_KEY || secrets.RELAY_TMDB_KEY }}
+          OMDB_KEY: ${{ vars.RELAY_OMDB_KEY || secrets.RELAY_OMDB_KEY }}
         run: |
           set -euo pipefail
           sync_secret() {

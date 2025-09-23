@@ -73,6 +73,22 @@ export function makeProxyRouter(opts: ProxyOptions) {
     const suffix = incomingUrl.pathname.replace(prefixRE, '')
     const target = new URL(opts.upstreamBase + (suffix ? `/${suffix}` : '') + normalizedSearch)
 
+    // Build a redacted URL string for debug headers (hide sensitive query params)
+    const redacted = (() => {
+      const u = new URL(target.toString())
+      const SENSITIVE = new Set([
+        'apikey', 'apiKey', 'api_key', 'key', 'token', 'access_token'
+      ])
+      // Case-insensitive match: rebuild params
+      const out = new URLSearchParams()
+      for (const [k, v] of u.searchParams.entries()) {
+        const lower = k.toLowerCase()
+        out.append(k, SENSITIVE.has(lower) ? 'REDACTED' : v)
+      }
+      u.search = out.toString() ? `?${out.toString()}` : ''
+      return u.toString()
+    })()
+
     // Build headers: start with incoming, drop hop-by-hop/personalization
     const headers = new Headers(c.req.headers)
     headers.delete('host')
@@ -101,7 +117,7 @@ export function makeProxyRouter(opts: ProxyOptions) {
         const hit = new Response(cached.body, cached)
         if (cacheCfg.addDebugHeaders) {
           hit.headers.set('X-Relay-Cache', 'HIT')
-          hit.headers.set('X-Relay-Cache-Key', target.toString())
+          hit.headers.set('X-Relay-Cache-Key', redacted)
           const colo = (c.req.raw as any)?.cf?.colo
           if (colo) hit.headers.set('X-Relay-PoP', String(colo))
         }
@@ -120,14 +136,21 @@ export function makeProxyRouter(opts: ProxyOptions) {
       const shouldCache = ok2xx || is404
       if (shouldCache) {
         const ttl = ok2xx ? cacheCfg.ttl2xx : cacheCfg.ttl404
-        const toCache = new Response(resp.body, resp)
-        toCache.headers.set('Cache-Control', `public, s-maxage=${ttl}, stale-while-revalidate=60`)
-        await caches.default.put(cacheKey, toCache.clone())
+        // Create distinct responses for cache and client
+        const cacheResp = new Response(resp.clone().body, resp)
+        cacheResp.headers.set('Cache-Control', `public, s-maxage=${ttl}, stale-while-revalidate=60`)
+        let storeOk = '1'
+        try {
+          await caches.default.put(cacheKey, cacheResp)
+        } catch (e) {
+          storeOk = '0'
+        }
 
-        const out = new Response(toCache.body, toCache)
+        const out = new Response(resp.body, resp)
         if (cacheCfg.addDebugHeaders) {
           out.headers.set('X-Relay-Cache', 'MISS')
-          out.headers.set('X-Relay-Cache-Key', target.toString())
+          out.headers.set('X-Relay-Cache-Key', redacted)
+          out.headers.set('X-Relay-Cache-Store', storeOk)
           const colo = (c.req.raw as any)?.cf?.colo
           if (colo) out.headers.set('X-Relay-PoP', String(colo))
         }
@@ -139,7 +162,7 @@ export function makeProxyRouter(opts: ProxyOptions) {
     // Pass-through (uncached or bypassed)
     const out = new Response(resp.body, resp)
     if (cacheCfg.addDebugHeaders) {
-      if (isCacheable && cacheKey) out.headers.set('X-Relay-Cache-Key', target.toString())
+      if (isCacheable && cacheKey) out.headers.set('X-Relay-Cache-Key', redacted)
       const colo = (c.req.raw as any)?.cf?.colo
       if (colo) out.headers.set('X-Relay-PoP', String(colo))
     }

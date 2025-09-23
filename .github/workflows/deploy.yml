@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Initial deploy (ensure Worker version exists)
+        run: pnpm run deploy
+
       - name: Sync Wrangler secrets to Cloudflare
         shell: bash
         env:
@@ -61,5 +64,5 @@ jobs:
           sync_secret TMDB_KEY "${TMDB_KEY:-}"
           sync_secret OMDB_KEY "${OMDB_KEY:-}"
 
-      - name: Deploy with Wrangler
+      - name: Deploy with Wrangler (publish with secrets)
         run: pnpm run deploy

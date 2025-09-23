@@ -6,6 +6,7 @@ Targets
 - Metacritic (IVA): `/metacritic/*` → `https://ee.iva-api.com/api/Metacritic/*`
 - Douban Frodo: `/douban/frodo/*` → `https://frodo.douban.com/api/*`
 - TMDB: `/tmdb/*` → `https://api.themoviedb.org/*`
+- OMDB: `/omdb/*` → `https://www.omdbapi.com/*`
 
 All routes share a core proxy that normalizes query params, injects headers/queries, and uses the Worker Cache API.
 
@@ -23,6 +24,8 @@ Set the required secrets first (see Secrets).
   - Pattern: `/douban/frodo/<path>?<query>` → `https://frodo.douban.com/api/<path>?<query>&apiKey=...`
 - TMDB
   - Pattern: `/tmdb/3/<resource>?<query>` → `https://api.themoviedb.org/3/<resource>?<query>`
+ - OMDB
+  - Pattern: `/omdb/<path>?<query>` → `https://www.omdbapi.com/<path>?<query>&apikey=...`
 
 **Caching**
 - Worker Cache API (edge only).
@@ -43,11 +46,13 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
   - `METACRITIC_KEY` — IVA subscription key
   - `DOUBAN_FRODO_KEY` — Douban Frodo apiKey
   - `TMDB_KEY` — TMDB token (value without the `Bearer ` prefix)
+  - `OMDB_KEY` — OMDB apikey
   - Optional: `METACRITIC_UA` — Custom User-Agent for Metacritic; if unset, no User-Agent header is sent upstream
 - Commands:
   - `wrangler secret put METACRITIC_KEY`
   - `wrangler secret put DOUBAN_FRODO_KEY`
   - `wrangler secret put TMDB_KEY`
+  - `wrangler secret put OMDB_KEY`
   - Optional: `wrangler secret put METACRITIC_UA`
 - Each route validates presence at runtime and returns 500 if missing.
 
@@ -63,7 +68,7 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
 **Code Structure**
 - `src/index.ts` — App mount points and health route
 - `src/_lib/proxy.ts` — Shared proxy + cache core (`makeProxyRouter`)
-- `src/types/env.ts` — Env typings (`METACRITIC_KEY`, `DOUBAN_FRODO_KEY`, `TMDB_KEY`)
+- `src/_lib/types/env.ts` — Env typings (`METACRITIC_KEY`, `DOUBAN_FRODO_KEY`, `TMDB_KEY`, `OMDB_KEY`, optional `METACRITIC_UA`)
 
 **Path Aliases**
 - Config: `tsconfig.json`

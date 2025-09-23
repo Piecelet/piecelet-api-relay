@@ -3,4 +3,5 @@ export type Env = {
   METACRITIC_UA?: string
   DOUBAN_FRODO_KEY: string
   TMDB_KEY: string
+  OMDB_KEY: string
 }

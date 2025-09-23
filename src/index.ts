@@ -3,6 +3,7 @@ import type { Env } from '@/_lib/types/env'
 import metacritic from '@/metacritic'
 import frodo from '@/douban/frodo'
 import tmdb from '@/tmdb'
+import omdb from '@/omdb'
 
 const app = new Hono<{ Bindings: Env }>()
 
@@ -17,5 +18,8 @@ app.route('/douban/frodo', frodo)
 
 // Mount the TMDB relay under /tmdb
 app.route('/tmdb', tmdb)
+
+// Mount the OMDB relay under /omdb
+app.route('/omdb', omdb)
 
 export default app

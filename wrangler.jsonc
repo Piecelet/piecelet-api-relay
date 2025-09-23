@@ -3,7 +3,7 @@
   "name": "piecelet-api-relay",
   "main": "src/index.ts",
   "compatibility_date": "2025-09-22",
-  "keep_vars": true
+  // "keep_vars": true
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],

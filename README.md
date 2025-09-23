@@ -43,10 +43,12 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
   - `METACRITIC_KEY` — IVA subscription key
   - `DOUBAN_FRODO_KEY` — Douban Frodo apiKey
   - `TMDB_KEY` — TMDB token (value without the `Bearer ` prefix)
+  - Optional: `METACRITIC_UA` — Custom User-Agent for Metacritic; if unset, no User-Agent header is sent upstream
 - Commands:
   - `wrangler secret put METACRITIC_KEY`
   - `wrangler secret put DOUBAN_FRODO_KEY`
   - `wrangler secret put TMDB_KEY`
+  - Optional: `wrangler secret put METACRITIC_UA`
 - Each route validates presence at runtime and returns 500 if missing.
 
 **Development**

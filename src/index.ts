@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
-import type { Env } from './_lib/proxy'
-import metacritic from './metacritic/index'
-import frodo from './douban/frodo/index'
-import tmdb from './tmdb/index'
+import type { Env } from '@/_lib/types/env'
+import metacritic from '@/metacritic'
+import frodo from '@/douban/frodo'
+import tmdb from '@/tmdb'
 
 const app = new Hono<{ Bindings: Env }>()
 

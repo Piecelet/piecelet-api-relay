@@ -1,4 +1,4 @@
-import { makeProxyRouter } from '../../_lib/proxy'
+import { makeProxyRouter } from '@/_lib/proxy'
 
 const frodo = makeProxyRouter({
   stripPrefix: '/douban/frodo',

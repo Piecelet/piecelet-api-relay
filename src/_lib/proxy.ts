@@ -1,11 +1,6 @@
 import { Hono } from 'hono'
 import type { Context } from 'hono'
-
-export type Env = {
-  METACRITIC_KEY: string
-  DOUBAN_FRODO_KEY: string
-  TMDB_KEY: string
-}
+import type { Env } from '@/_lib/types/env'
 
 type CacheOptions = {
   enabled?: boolean

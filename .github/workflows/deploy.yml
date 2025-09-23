@@ -61,4 +61,4 @@ jobs:
           sync_secret OMDB_KEY "${OMDB_KEY:-}"
 
       - name: Deploy with Wrangler
-        run: pnpm deploy
+        run: pnpm run deploy

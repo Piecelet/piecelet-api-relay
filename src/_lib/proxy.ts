@@ -122,7 +122,6 @@ export function makeProxyRouter(opts: ProxyOptions) {
         const ttl = ok2xx ? cacheCfg.ttl2xx : cacheCfg.ttl404
         const toCache = new Response(resp.body, resp)
         toCache.headers.set('Cache-Control', `public, s-maxage=${ttl}, stale-while-revalidate=60`)
-        toCache.headers.set('Vary', 'Accept-Encoding')
         await caches.default.put(cacheKey, toCache.clone())
 
         const out = new Response(toCache.body, toCache)

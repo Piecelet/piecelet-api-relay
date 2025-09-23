@@ -48,7 +48,8 @@ jobs:
           sync_secret() {
             local name="$1"; local value="$2"
             if [[ -n "${value:-}" ]]; then
-              printf "%s" "$value" | pnpm exec wrangler secret put "$name" --yes --quiet
+              # Pipe value into wrangler; wrangler v4 does not support --yes/--quiet
+              printf "%s" "$value" | pnpm exec wrangler secret put "$name"
               echo "Synced secret: $name"
             else
               echo "Skipped (unset): $name"

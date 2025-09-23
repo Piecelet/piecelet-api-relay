@@ -1,9 +1,10 @@
 import { Hono } from 'hono'
+import type { Env } from './_lib/proxy'
 import metacritic from './metacritic/index'
 import frodo from './douban/frodo/index'
 import tmdb from './tmdb/index'
 
-const app = new Hono()
+const app = new Hono<{ Bindings: Env }>()
 
 // Health/root
 app.get('/', (c) => c.text('Hello Piecelet API Relay!'))

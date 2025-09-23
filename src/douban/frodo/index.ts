@@ -3,8 +3,8 @@ import { makeProxyRouter } from '../../_lib/proxy'
 const frodo = makeProxyRouter({
   stripPrefix: '/douban/frodo',
   upstreamBase: 'https://frodo.douban.com/api',
-  injectQuery: (params) => {
-    params.set('apiKey', 'DOUBAN_FRODO_KEY_REDACTED')
+  injectQuery: (params, c) => {
+    params.set('apiKey', c.env.DOUBAN_API_KEY)
   },
   headerMutator: (headers) => {
     headers.set('Referer', 'https://servicewechat.com/wx2f9b06c1de1ccfca/99/page-frame.html')

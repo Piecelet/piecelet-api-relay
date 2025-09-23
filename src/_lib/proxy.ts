@@ -1,6 +1,12 @@
 import { Hono } from 'hono'
 import type { Context } from 'hono'
 
+export type Env = {
+  IVA_KEY: string
+  DOUBAN_API_KEY: string
+  TMDB_BEARER: string
+}
+
 type CacheOptions = {
   enabled?: boolean
   ttl2xx?: number
@@ -15,9 +21,9 @@ type ProxyOptions = {
   // Upstream base URL, e.g., 'https://ee.iva-api.com/api/Metacritic'
   upstreamBase: string
   // Customize/augment query params before building target URL
-  injectQuery?: (params: URLSearchParams, c: Context) => void
+  injectQuery?: (params: URLSearchParams, c: Context<{ Bindings: Env }>) => void
   // Mutate headers before forwarding to upstream
-  headerMutator?: (headers: Headers, c: Context) => void
+  headerMutator?: (headers: Headers, c: Context<{ Bindings: Env }>) => void
   // Cache behavior
   cache?: CacheOptions
 }
@@ -34,9 +40,9 @@ const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 export function makeProxyRouter(opts: ProxyOptions) {
   const cacheCfg: Required<CacheOptions> = { ...defaultCache, ...(opts.cache || {}) }
-  const router = new Hono()
+  const router = new Hono<{ Bindings: Env }>()
 
-  const handler = async (c: Context) => {
+  const handler = async (c: Context<{ Bindings: Env }>) => {
     const incomingUrl = new URL(c.req.url)
 
     // noCache=1 bypass flag (not forwarded, not part of key)
@@ -141,4 +147,3 @@ export function makeProxyRouter(opts: ProxyOptions) {
 
   return router
 }
-

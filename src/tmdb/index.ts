@@ -3,12 +3,9 @@ import { makeProxyRouter } from '../_lib/proxy'
 const tmdb = makeProxyRouter({
   stripPrefix: '/tmdb',
   upstreamBase: 'https://api.themoviedb.org',
-  headerMutator: (headers) => {
+  headerMutator: (headers, c) => {
     headers.set('accept', 'application/json')
-    headers.set(
-      'authorization',
-      'Bearer TMDB_KEY_REDACTED'
-    )
+    headers.set('authorization', `Bearer ${c.env.TMDB_BEARER}`)
   },
   cache: {
     enabled: true,

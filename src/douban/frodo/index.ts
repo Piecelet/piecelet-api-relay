@@ -4,7 +4,7 @@ const frodo = makeProxyRouter({
   stripPrefix: '/douban/frodo',
   upstreamBase: 'https://frodo.douban.com/api',
   injectQuery: (params, c) => {
-    params.set('apiKey', c.env.DOUBAN_API_KEY)
+    params.set('apiKey', c.env.DOUBAN_FRODO_KEY)
   },
   headerMutator: (headers) => {
     headers.set('Referer', 'https://servicewechat.com/wx2f9b06c1de1ccfca/99/page-frame.html')
@@ -24,6 +24,7 @@ const frodo = makeProxyRouter({
     }
     headers.set('Cookie', `bid=${genBid()}`)
   },
+  requiredEnv: ['DOUBAN_FRODO_KEY'],
   cache: {
     enabled: true,
     ttl2xx: 1800,

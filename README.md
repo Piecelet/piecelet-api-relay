@@ -24,13 +24,13 @@ Secrets (required)
 
 ```txt
 # Metacritic (IVA) subscription key
-wrangler secret put IVA_KEY
+wrangler secret put METACRITIC_KEY
 
 # Douban Frodo API key
-wrangler secret put DOUBAN_API_KEY
+wrangler secret put DOUBAN_FRODO_KEY
 
-# TMDB Bearer token (without the leading 'Bearer ')
-wrangler secret put TMDB_BEARER
+# TMDB API token (without the leading 'Bearer ')
+wrangler secret put TMDB_KEY
 ```
 
 These are read at runtime via `c.env` and injected by the proxy routes.

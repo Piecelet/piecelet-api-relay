@@ -2,9 +2,9 @@ import { Hono } from 'hono'
 import type { Context } from 'hono'
 
 export type Env = {
-  IVA_KEY: string
-  DOUBAN_API_KEY: string
-  TMDB_BEARER: string
+  METACRITIC_KEY: string
+  DOUBAN_FRODO_KEY: string
+  TMDB_KEY: string
 }
 
 type CacheOptions = {
@@ -26,6 +26,8 @@ type ProxyOptions = {
   headerMutator?: (headers: Headers, c: Context<{ Bindings: Env }>) => void
   // Cache behavior
   cache?: CacheOptions
+  // Ensure these env vars are present before proxying
+  requiredEnv?: string[]
 }
 
 const defaultCache: Required<CacheOptions> = {
@@ -43,6 +45,15 @@ export function makeProxyRouter(opts: ProxyOptions) {
   const router = new Hono<{ Bindings: Env }>()
 
   const handler = async (c: Context<{ Bindings: Env }>) => {
+    // Validate required secrets
+    if (opts.requiredEnv && opts.requiredEnv.length) {
+      for (const key of opts.requiredEnv) {
+        const val = (c.env as Record<string, unknown>)[key]
+        if (typeof val !== 'string' || !val) {
+          return new Response(`Missing required secret: ${key}`, { status: 500 })
+        }
+      }
+    }
     const incomingUrl = new URL(c.req.url)
 
     // noCache=1 bypass flag (not forwarded, not part of key)

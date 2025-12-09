@@ -11,7 +11,7 @@ const varName = process.argv[2];
 const varValue = process.argv[3];
 
 if (!varName || !varValue) {
-    console.error('Usage: npx tsx scripts/update-wrangler.ts <VAR_NAME> <VAR_VALUE>');
+    console.error('Usage: npx tsx scripts/set-wrangler-var.ts <VAR_NAME> <VAR_VALUE>');
     process.exit(1);
 }
 

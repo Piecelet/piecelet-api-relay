@@ -12,7 +12,7 @@
     "DOUBAN_FRODO_KEY": "<DOUBAN_FRODO_KEY_HERE>",
     "TMDB_KEY": "<TMDB_KEY_HERE>",
     "OMDB_KEY": "<OMDB_KEY_HERE>",
-    "GOODREADS_KEY": "<GOODREADS_KEY_HERE>",
+    "GOODREADS_KEY": "TEST_KEY_123",
   },
   // "keep_vars": true
   // "compatibility_flags": [

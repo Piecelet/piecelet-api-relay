@@ -47,12 +47,13 @@ jobs:
           OMDB_KEY: ${{ vars.RELAY_OMDB_KEY || secrets.RELAY_OMDB_KEY }}
           GOODREADS_KEY: ${{ vars.RELAY_GOODREADS_KEY || secrets.RELAY_GOODREADS_KEY }}
         run: |
-          pnpm run set-var -- METACRITIC_KEY "$METACRITIC_KEY"
-          pnpm run set-var -- METACRITIC_UA "$METACRITIC_UA"
-          pnpm run set-var -- DOUBAN_FRODO_KEY "$DOUBAN_FRODO_KEY"
-          pnpm run set-var -- TMDB_KEY "$TMDB_KEY"
-          pnpm run set-var -- OMDB_KEY "$OMDB_KEY"
-          pnpm run set-var -- GOODREADS_KEY "$GOODREADS_KEY"
+        run: |
+          pnpm run set-var METACRITIC_KEY
+          pnpm run set-var METACRITIC_UA
+          pnpm run set-var DOUBAN_FRODO_KEY
+          pnpm run set-var TMDB_KEY
+          pnpm run set-var OMDB_KEY
+          pnpm run set-var GOODREADS_KEY
 
       - name: Deploy with Wrangler
         run: pnpm run deploy

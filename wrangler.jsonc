@@ -7,7 +7,7 @@
     "mode": "smart",
   },
   "vars": {
-    "METACRITIC_KEY": "<METACRITIC_KEY_HERE>",
+    "METACRITIC_KEY": "12345678",
     "METACRITIC_UA": "<METACRITIC_UA_HERE>",
     "DOUBAN_FRODO_KEY": "<DOUBAN_FRODO_KEY_HERE>",
     "TMDB_KEY": "<TMDB_KEY_HERE>",

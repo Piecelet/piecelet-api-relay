@@ -7,6 +7,13 @@ const goodreads = makeProxyRouter({
         params.set('key', c.env.GOODREADS_KEY)
     },
     requiredEnv: ['GOODREADS_KEY'],
+    cache: {
+        enabled: true,
+        ttl2xx: 1800,
+        ttl404: 60,
+        addDebugHeaders: true,
+        removeClientCacheControl: true,
+    },
 })
 
 export default goodreads

@@ -12,6 +12,9 @@ importers:
         specifier: ^4.10.7
         version: 4.10.7
     devDependencies:
+      '@types/node':
+        specifier: ^24.10.2
+        version: 24.10.2
       wrangler:
         specifier: ^4.53.0
         version: 4.53.0
@@ -355,6 +358,9 @@ packages:
   '@speed-highlight/core@1.2.12':
     resolution: {integrity: sha512-uilwrK0Ygyri5dToHYdZSjcvpS2ZwX0w5aSt3GCEN9hrjxWCoeV4Z2DTXuxjwbntaLQIEEAlCeNQss5SoHvAEA==}
 
+  '@types/node@24.10.2':
+    resolution: {integrity: sha512-WOhQTZ4G8xZ1tjJTvKOpyEVSGgOTvJAfDK3FNFgELyaTpzhdgHVHeqW8V+UJvzF5BT+/B54T/1S2K6gd9c7bbA==}
+
   acorn-walk@8.3.2:
     resolution: {integrity: sha512-cjkyv4OtNCIeqhHrfS81QWXoCBPExR/J62oyEqepVw8WaQeSqpW2uhuLPh1m9eWhDuOo/jUXVTlifvesOWp/4A==}
     engines: {node: '>=0.4.0'}
@@ -458,6 +464,9 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
   undici@7.14.0:
     resolution: {integrity: sha512-Vqs8HTzjpQXZeXdpsfChQTlafcMQaaIwnGwLam1wudSSjlJeQ3bw1j+TLPePgrCnCpUXx7Ba5Pdpf5OBih62NQ==}
@@ -716,6 +725,10 @@ snapshots:
 
   '@speed-highlight/core@1.2.12': {}
 
+  '@types/node@24.10.2':
+    dependencies:
+      undici-types: 7.16.0
+
   acorn-walk@8.3.2: {}
 
   acorn@8.14.0: {}
@@ -848,6 +861,8 @@ snapshots:
 
   tslib@2.8.1:
     optional: true
+
+  undici-types@7.16.0: {}
 
   undici@7.14.0: {}
 

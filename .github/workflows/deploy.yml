@@ -37,34 +37,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Initial deploy (ensure Worker version exists)
-        run: pnpm run deploy
-
-      - name: Sync Wrangler secrets to Cloudflare
-        shell: bash
+      - name: Update Wrangler Config
         env:
           METACRITIC_KEY: ${{ vars.RELAY_METACRITIC_KEY || secrets.RELAY_METACRITIC_KEY }}
           METACRITIC_UA: ${{ vars.RELAY_METACRITIC_UA || secrets.RELAY_METACRITIC_UA }}
           DOUBAN_FRODO_KEY: ${{ vars.RELAY_DOUBAN_FRODO_KEY || secrets.RELAY_DOUBAN_FRODO_KEY }}
           TMDB_KEY: ${{ vars.RELAY_TMDB_KEY || secrets.RELAY_TMDB_KEY }}
           OMDB_KEY: ${{ vars.RELAY_OMDB_KEY || secrets.RELAY_OMDB_KEY }}
+          GOODREADS_KEY: ${{ vars.RELAY_GOODREADS_KEY || secrets.RELAY_GOODREADS_KEY }}
         run: |
-          set -euo pipefail
-          sync_secret() {
-            local name="$1"; local value="$2"
-            if [[ -n "${value:-}" ]]; then
-              # Pipe value into wrangler; wrangler v4 does not support --yes/--quiet
-              printf "%s" "$value" | pnpm exec wrangler secret put "$name"
-              echo "Synced secret: $name"
-            else
-              echo "Skipped (unset): $name"
-            fi
-          }
-          sync_secret METACRITIC_KEY "${METACRITIC_KEY:-}"
-          sync_secret METACRITIC_UA "${METACRITIC_UA:-}"
-          sync_secret DOUBAN_FRODO_KEY "${DOUBAN_FRODO_KEY:-}"
-          sync_secret TMDB_KEY "${TMDB_KEY:-}"
-          sync_secret OMDB_KEY "${OMDB_KEY:-}"
+          pnpm run set-var -- METACRITIC_KEY "$METACRITIC_KEY"
+          pnpm run set-var -- METACRITIC_UA "$METACRITIC_UA"
+          pnpm run set-var -- DOUBAN_FRODO_KEY "$DOUBAN_FRODO_KEY"
+          pnpm run set-var -- TMDB_KEY "$TMDB_KEY"
+          pnpm run set-var -- OMDB_KEY "$OMDB_KEY"
+          pnpm run set-var -- GOODREADS_KEY "$GOODREADS_KEY"
 
-      - name: Deploy with Wrangler (publish with secrets)
+      - name: Deploy with Wrangler
         run: pnpm run deploy

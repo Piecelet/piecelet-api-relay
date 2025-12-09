@@ -58,10 +58,10 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
   - `GOODREADS_KEY` — Goodreads developer key
   - Optional: `METACRITIC_UA`
 - **Local Dev / Config Update**:
-  - Use the helper script to set variables in `wrangler.jsonc` (requires environment variables to be set):
+  - Use the helper script to set variables in `wrangler.jsonc`:
     ```bash
-    METACRITIC_KEY="your_key" npm run set-var -- METACRITIC_KEY
-    GOODREADS_KEY="your_key" npm run set-var -- GOODREADS_KEY
+    npm run set-var -- METACRITIC_KEY "your_key"
+    npm run set-var -- GOODREADS_KEY "your_key"
     # ... etc
     ```
   - This replaces placeholders like `<METACRITIC_KEY_HERE>` with the actual value.

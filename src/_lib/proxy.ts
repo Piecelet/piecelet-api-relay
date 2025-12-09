@@ -118,7 +118,7 @@ export function makeProxyRouter(opts: ProxyOptions) {
         if (cacheCfg.addDebugHeaders) {
           hit.headers.set('X-Relay-Cache', 'HIT')
           hit.headers.set('X-Relay-Cache-Key', redacted)
-          const colo = (c.req.raw as any)?.cf?.colo
+          const colo = (c.req.raw)?.cf?.colo
           if (colo) hit.headers.set('X-Relay-PoP', String(colo))
         }
         if (cacheCfg.removeClientCacheControl) hit.headers.delete('Cache-Control')
@@ -151,7 +151,7 @@ export function makeProxyRouter(opts: ProxyOptions) {
           out.headers.set('X-Relay-Cache', 'MISS')
           out.headers.set('X-Relay-Cache-Key', redacted)
           out.headers.set('X-Relay-Cache-Store', storeOk)
-          const colo = (c.req.raw as any)?.cf?.colo
+          const colo = (c.req.raw)?.cf?.colo
           if (colo) out.headers.set('X-Relay-PoP', String(colo))
         }
         if (cacheCfg.removeClientCacheControl) out.headers.delete('Cache-Control')
@@ -163,7 +163,7 @@ export function makeProxyRouter(opts: ProxyOptions) {
     const out = new Response(resp.body, resp)
     if (cacheCfg.addDebugHeaders) {
       if (isCacheable && cacheKey) out.headers.set('X-Relay-Cache-Key', redacted)
-      const colo = (c.req.raw as any)?.cf?.colo
+      const colo = (c.req.raw)?.cf?.colo
       if (colo) out.headers.set('X-Relay-PoP', String(colo))
     }
     if (cacheCfg.removeClientCacheControl) out.headers.delete('Cache-Control')

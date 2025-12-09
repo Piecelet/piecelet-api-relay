@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-09-22",
   "placement": {
-    "mode": "smart"
+    "mode": "smart",
   },
   "vars": {
     "METACRITIC_KEY": "<METACRITIC_KEY_HERE>",
@@ -12,7 +12,7 @@
     "DOUBAN_FRODO_KEY": "<DOUBAN_FRODO_KEY_HERE>",
     "TMDB_KEY": "<TMDB_KEY_HERE>",
     "OMDB_KEY": "<OMDB_KEY_HERE>",
-    "GOODREADS_KEY": "<GOODREADS_KEY_HERE>"
+    "GOODREADS_KEY": "<GOODREADS_KEY_HERE>",
   },
   // "keep_vars": true
   // "compatibility_flags": [

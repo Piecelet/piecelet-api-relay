@@ -7,4 +7,4 @@
 //   GOODREADS_KEY: string
 // }
 
-export type Env = CloudflareBindings
+export type Env = CloudflareBindings;

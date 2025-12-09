@@ -1,13 +1,13 @@
-import { makeProxyRouter } from '@/_lib/proxy'
+import { makeProxyRouter } from "@/_lib/proxy";
 
 const tmdb = makeProxyRouter({
-  stripPrefix: '/tmdb',
-  upstreamBase: 'https://api.themoviedb.org',
+  stripPrefix: "/tmdb",
+  upstreamBase: "https://api.themoviedb.org",
   headerMutator: (headers, c) => {
-    headers.set('accept', 'application/json')
-    headers.set('authorization', `Bearer ${c.env.TMDB_KEY}`)
+    headers.set("accept", "application/json");
+    headers.set("authorization", `Bearer ${c.env.TMDB_KEY}`);
   },
-  requiredEnv: ['TMDB_KEY'],
+  requiredEnv: ["TMDB_KEY"],
   cache: {
     enabled: true,
     ttl2xx: 1800,
@@ -15,6 +15,6 @@ const tmdb = makeProxyRouter({
     addDebugHeaders: true,
     removeClientCacheControl: true,
   },
-})
+});
 
-export default tmdb
+export default tmdb;

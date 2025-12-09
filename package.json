@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
+    "format": "prettier --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cf-typegen": "wrangler types ./src/_lib/types/worker-configuration.d.ts --env-interface CloudflareBindings",

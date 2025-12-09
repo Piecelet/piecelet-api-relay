@@ -1,13 +1,13 @@
-import { makeProxyRouter } from '@/_lib/proxy'
+import { makeProxyRouter } from "@/_lib/proxy";
 
 const omdb = makeProxyRouter({
-  stripPrefix: '/omdb',
-  upstreamBase: 'https://www.omdbapi.com',
+  stripPrefix: "/omdb",
+  upstreamBase: "https://www.omdbapi.com",
   injectQuery: (params, c) => {
     // Ensure apikey is always present and from server env
-    params.set('apikey', c.env.OMDB_KEY)
+    params.set("apikey", c.env.OMDB_KEY);
   },
-  requiredEnv: ['OMDB_KEY'],
+  requiredEnv: ["OMDB_KEY"],
   cache: {
     enabled: true,
     ttl2xx: 1800,
@@ -15,7 +15,6 @@ const omdb = makeProxyRouter({
     addDebugHeaders: true,
     removeClientCacheControl: true,
   },
-})
+});
 
-export default omdb
-
+export default omdb;

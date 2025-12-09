@@ -2,3 +2,4 @@
 build
 coverage
 worker-configuration.d.ts
+pnpm-lock.yaml

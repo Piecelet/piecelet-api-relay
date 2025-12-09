@@ -1,29 +1,32 @@
-import { Hono } from 'hono'
-import type { Context } from 'hono'
-import type { Env } from '@/_lib/types/env'
+import { Hono } from "hono";
+import type { Context } from "hono";
+import type { Env } from "@/_lib/types/env";
 
 type CacheOptions = {
-  enabled?: boolean
-  ttl2xx?: number
-  ttl404?: number
-  addDebugHeaders?: boolean
-  removeClientCacheControl?: boolean
-}
+  enabled?: boolean;
+  ttl2xx?: number;
+  ttl404?: number;
+  addDebugHeaders?: boolean;
+  removeClientCacheControl?: boolean;
+};
 
 type ProxyOptions = {
   // Incoming path prefix to strip, e.g., '/metacritic'
-  stripPrefix: string
+  stripPrefix: string;
   // Upstream base URL, e.g., 'https://ee.iva-api.com/api/Metacritic'
-  upstreamBase: string
+  upstreamBase: string;
   // Customize/augment query params before building target URL
-  injectQuery?: (params: URLSearchParams, c: Context<{ Bindings: Env }>) => void
+  injectQuery?: (
+    params: URLSearchParams,
+    c: Context<{ Bindings: Env }>,
+  ) => void;
   // Mutate headers before forwarding to upstream
-  headerMutator?: (headers: Headers, c: Context<{ Bindings: Env }>) => void
+  headerMutator?: (headers: Headers, c: Context<{ Bindings: Env }>) => void;
   // Cache behavior
-  cache?: CacheOptions
+  cache?: CacheOptions;
   // Ensure these env vars are present before proxying
-  requiredEnv?: string[]
-}
+  requiredEnv?: string[];
+};
 
 const defaultCache: Required<CacheOptions> = {
   enabled: true,
@@ -31,147 +34,165 @@ const defaultCache: Required<CacheOptions> = {
   ttl404: 60,
   addDebugHeaders: true,
   removeClientCacheControl: true,
-}
+};
 
-const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export function makeProxyRouter(opts: ProxyOptions) {
-  const cacheCfg: Required<CacheOptions> = { ...defaultCache, ...(opts.cache || {}) }
-  const router = new Hono<{ Bindings: Env }>()
+  const cacheCfg: Required<CacheOptions> = {
+    ...defaultCache,
+    ...(opts.cache || {}),
+  };
+  const router = new Hono<{ Bindings: Env }>();
 
   const handler = async (c: Context<{ Bindings: Env }>) => {
     // Validate required secrets
     if (opts.requiredEnv && opts.requiredEnv.length) {
       for (const key of opts.requiredEnv) {
-        const val = (c.env as Record<string, unknown>)[key]
-        if (typeof val !== 'string' || !val) {
-          return new Response(`Missing required secret: ${key}`, { status: 500 })
+        const val = (c.env as Record<string, unknown>)[key];
+        if (typeof val !== "string" || !val) {
+          return new Response(`Missing required secret: ${key}`, {
+            status: 500,
+          });
         }
       }
     }
-    const incomingUrl = new URL(c.req.url)
+    const incomingUrl = new URL(c.req.url);
 
     // noCache=1 bypass flag (not forwarded, not part of key)
-    const paramsIn = new URLSearchParams(incomingUrl.search)
-    const noCache = paramsIn.get('noCache') === '1'
-    if (paramsIn.has('noCache')) paramsIn.delete('noCache')
+    const paramsIn = new URLSearchParams(incomingUrl.search);
+    const noCache = paramsIn.get("noCache") === "1";
+    if (paramsIn.has("noCache")) paramsIn.delete("noCache");
 
     // Allow route-specific injection before normalization
-    if (opts.injectQuery) opts.injectQuery(paramsIn, c)
+    if (opts.injectQuery) opts.injectQuery(paramsIn, c);
 
     // Build normalized query string (stable ordering)
     const sortedEntries = Array.from(paramsIn.entries()).sort((a, b) => {
-      if (a[0] === b[0]) return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0
-      return a[0] < b[0] ? -1 : 1
-    })
+      if (a[0] === b[0]) return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
+      return a[0] < b[0] ? -1 : 1;
+    });
     const normalizedSearch = sortedEntries.length
       ? `?${new URLSearchParams(sortedEntries).toString()}`
-      : ''
+      : "";
 
     // Compute upstream target URL
-    const prefixRE = new RegExp('^' + escapeRegExp(opts.stripPrefix) + '/?')
-    const suffix = incomingUrl.pathname.replace(prefixRE, '')
-    const target = new URL(opts.upstreamBase + (suffix ? `/${suffix}` : '') + normalizedSearch)
+    const prefixRE = new RegExp("^" + escapeRegExp(opts.stripPrefix) + "/?");
+    const suffix = incomingUrl.pathname.replace(prefixRE, "");
+    const target = new URL(
+      opts.upstreamBase + (suffix ? `/${suffix}` : "") + normalizedSearch,
+    );
 
     // Build a redacted URL string for debug headers (hide sensitive query params)
     const redacted = (() => {
-      const u = new URL(target.toString())
+      const u = new URL(target.toString());
       const SENSITIVE = new Set([
-        'apikey', 'apiKey', 'api_key', 'key', 'token', 'access_token'
-      ])
+        "apikey",
+        "apiKey",
+        "api_key",
+        "key",
+        "token",
+        "access_token",
+      ]);
       // Case-insensitive match: rebuild params
-      const out = new URLSearchParams()
+      const out = new URLSearchParams();
       for (const [k, v] of u.searchParams.entries()) {
-        const lower = k.toLowerCase()
-        out.append(k, SENSITIVE.has(lower) ? 'REDACTED' : v)
+        const lower = k.toLowerCase();
+        out.append(k, SENSITIVE.has(lower) ? "REDACTED" : v);
       }
-      u.search = out.toString() ? `?${out.toString()}` : ''
-      return u.toString()
-    })()
+      u.search = out.toString() ? `?${out.toString()}` : "";
+      return u.toString();
+    })();
 
     // Build headers: start with incoming, drop hop-by-hop/personalization
-    const headers = new Headers(c.req.headers)
-    headers.delete('host')
-    headers.delete('content-length')
-    headers.delete('connection')
-    headers.delete('cookie')
-    headers.delete('authorization')
-    if (opts.headerMutator) opts.headerMutator(headers, c)
+    const headers = new Headers(c.req.headers);
+    headers.delete("host");
+    headers.delete("content-length");
+    headers.delete("connection");
+    headers.delete("cookie");
+    headers.delete("authorization");
+    if (opts.headerMutator) opts.headerMutator(headers, c);
 
     // Prepare request init
-    const method = c.req.method
-    const isCacheable = method === 'GET' || method === 'HEAD'
-    const hasBody = !(method === 'GET' || method === 'HEAD')
+    const method = c.req.method;
+    const isCacheable = method === "GET" || method === "HEAD";
+    const hasBody = !(method === "GET" || method === "HEAD");
     const reqInit: RequestInit = {
       method,
       headers,
       body: hasBody ? c.req.raw.body : undefined,
-    }
+    };
 
     // Try cache
-    let cacheKey: Request | undefined
+    let cacheKey: Request | undefined;
     if (cacheCfg.enabled && isCacheable && !noCache) {
-      cacheKey = new Request(target.toString(), { method: 'GET' })
-      const cached = await caches.default.match(cacheKey)
+      cacheKey = new Request(target.toString(), { method: "GET" });
+      const cached = await caches.default.match(cacheKey);
       if (cached) {
-        const hit = new Response(cached.body, cached)
+        const hit = new Response(cached.body, cached);
         if (cacheCfg.addDebugHeaders) {
-          hit.headers.set('X-Relay-Cache', 'HIT')
-          hit.headers.set('X-Relay-Cache-Key', redacted)
-          const colo = (c.req.raw)?.cf?.colo
-          if (colo) hit.headers.set('X-Relay-PoP', String(colo))
+          hit.headers.set("X-Relay-Cache", "HIT");
+          hit.headers.set("X-Relay-Cache-Key", redacted);
+          const colo = c.req.raw?.cf?.colo;
+          if (colo) hit.headers.set("X-Relay-PoP", String(colo));
         }
-        if (cacheCfg.removeClientCacheControl) hit.headers.delete('Cache-Control')
-        return hit
+        if (cacheCfg.removeClientCacheControl)
+          hit.headers.delete("Cache-Control");
+        return hit;
       }
     }
 
-    const resp = await fetch(target.toString(), reqInit)
+    const resp = await fetch(target.toString(), reqInit);
 
     // Conditionally cache 2xx and 404
     if (cacheCfg.enabled && isCacheable && !noCache && cacheKey) {
-      const status = resp.status
-      const ok2xx = status >= 200 && status < 300
-      const is404 = status === 404
-      const shouldCache = ok2xx || is404
+      const status = resp.status;
+      const ok2xx = status >= 200 && status < 300;
+      const is404 = status === 404;
+      const shouldCache = ok2xx || is404;
       if (shouldCache) {
-        const ttl = ok2xx ? cacheCfg.ttl2xx : cacheCfg.ttl404
+        const ttl = ok2xx ? cacheCfg.ttl2xx : cacheCfg.ttl404;
         // Create distinct responses for cache and client
-        const cacheResp = new Response(resp.clone().body, resp)
-        cacheResp.headers.set('Cache-Control', `public, s-maxage=${ttl}, stale-while-revalidate=60`)
-        let storeOk = '1'
+        const cacheResp = new Response(resp.clone().body, resp);
+        cacheResp.headers.set(
+          "Cache-Control",
+          `public, s-maxage=${ttl}, stale-while-revalidate=60`,
+        );
+        let storeOk = "1";
         try {
-          await caches.default.put(cacheKey, cacheResp)
+          await caches.default.put(cacheKey, cacheResp);
         } catch (e) {
-          storeOk = '0'
+          storeOk = "0";
         }
 
-        const out = new Response(resp.body, resp)
+        const out = new Response(resp.body, resp);
         if (cacheCfg.addDebugHeaders) {
-          out.headers.set('X-Relay-Cache', 'MISS')
-          out.headers.set('X-Relay-Cache-Key', redacted)
-          out.headers.set('X-Relay-Cache-Store', storeOk)
-          const colo = (c.req.raw)?.cf?.colo
-          if (colo) out.headers.set('X-Relay-PoP', String(colo))
+          out.headers.set("X-Relay-Cache", "MISS");
+          out.headers.set("X-Relay-Cache-Key", redacted);
+          out.headers.set("X-Relay-Cache-Store", storeOk);
+          const colo = c.req.raw?.cf?.colo;
+          if (colo) out.headers.set("X-Relay-PoP", String(colo));
         }
-        if (cacheCfg.removeClientCacheControl) out.headers.delete('Cache-Control')
-        return out
+        if (cacheCfg.removeClientCacheControl)
+          out.headers.delete("Cache-Control");
+        return out;
       }
     }
 
     // Pass-through (uncached or bypassed)
-    const out = new Response(resp.body, resp)
+    const out = new Response(resp.body, resp);
     if (cacheCfg.addDebugHeaders) {
-      if (isCacheable && cacheKey) out.headers.set('X-Relay-Cache-Key', redacted)
-      const colo = (c.req.raw)?.cf?.colo
-      if (colo) out.headers.set('X-Relay-PoP', String(colo))
+      if (isCacheable && cacheKey)
+        out.headers.set("X-Relay-Cache-Key", redacted);
+      const colo = c.req.raw?.cf?.colo;
+      if (colo) out.headers.set("X-Relay-PoP", String(colo));
     }
-    if (cacheCfg.removeClientCacheControl) out.headers.delete('Cache-Control')
-    return out
-  }
+    if (cacheCfg.removeClientCacheControl) out.headers.delete("Cache-Control");
+    return out;
+  };
 
-  router.all('/', handler)
-  router.all('/*', handler)
+  router.all("/", handler);
+  router.all("/*", handler);
 
-  return router
+  return router;
 }

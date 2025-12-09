@@ -6,13 +6,18 @@
   "placement": {
     "mode": "smart"
   },
+  "vars": {
+    "METACRITIC_KEY": "<METACRITIC_KEY_HERE>",
+    "METACRITIC_UA": "<METACRITIC_UA_HERE>",
+    "DOUBAN_FRODO_KEY": "<DOUBAN_FRODO_KEY_HERE>",
+    "TMDB_KEY": "<TMDB_KEY_HERE>",
+    "OMDB_KEY": "<OMDB_KEY_HERE>",
+    "GOODREADS_KEY": "<GOODREADS_KEY_HERE>"
+  },
   // "keep_vars": true
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
   // "kv_namespaces": [
   //   {
   //     "binding": "MY_KV_NAMESPACE",

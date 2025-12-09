@@ -5,6 +5,7 @@ import metacritic from '@/metacritic'
 import frodo from '@/douban/frodo'
 import tmdb from '@/tmdb'
 import omdb from '@/omdb'
+import goodreads from '@/goodreads'
 
 const app = new Hono<{ Bindings: Env }>()
 
@@ -25,5 +26,8 @@ app.route('/tmdb', tmdb)
 
 // Mount the OMDB relay under /omdb
 app.route('/omdb', omdb)
+
+// Mount the Goodreads relay under /goodreads
+app.route('/goodreads', goodreads)
 
 export default app

@@ -56,6 +56,8 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
   - `TMDB_KEY` — TMDB token
   - `OMDB_KEY` — OMDB apikey
   - `GOODREADS_KEY` — Goodreads developer key
+  - `IGDB_KEY` — IGDB API key
+  - `IGDB_CLIENT_ID` — IGDB Client ID
   - Optional: `METACRITIC_UA`
 - **Local Dev / Config Update**:
   - Use the helper script to set variables in `wrangler.jsonc`:
@@ -83,6 +85,8 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
     - `RELAY_TMDB_KEY`
     - `RELAY_OMDB_KEY`
     - `RELAY_GOODREADS_KEY`
+    - `RELAY_IGDB_KEY`
+    - `RELAY_IGDB_CLIENT_ID`
     - `RELAY_METACRITIC_UA` (Optional)
 
 **Code Structure**

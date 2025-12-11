@@ -46,6 +46,8 @@ jobs:
           TMDB_KEY: ${{ vars.RELAY_TMDB_KEY || secrets.RELAY_TMDB_KEY }}
           OMDB_KEY: ${{ vars.RELAY_OMDB_KEY || secrets.RELAY_OMDB_KEY }}
           GOODREADS_KEY: ${{ vars.RELAY_GOODREADS_KEY || secrets.RELAY_GOODREADS_KEY }}
+          IGDB_KEY: ${{ vars.RELAY_IGDB_KEY || secrets.RELAY_IGDB_KEY }}
+          IGDB_CLIENT_ID: ${{ vars.RELAY_IGDB_CLIENT_ID || secrets.RELAY_IGDB_CLIENT_ID }}
         run: |
           pnpm run --silent set-var METACRITIC_KEY "$METACRITIC_KEY"
           pnpm run --silent set-var METACRITIC_UA "$METACRITIC_UA"
@@ -53,6 +55,8 @@ jobs:
           pnpm run --silent set-var TMDB_KEY "$TMDB_KEY"
           pnpm run --silent set-var OMDB_KEY "$OMDB_KEY"
           pnpm run --silent set-var GOODREADS_KEY "$GOODREADS_KEY"
+          pnpm run --silent set-var IGDB_KEY "$IGDB_KEY"
+          pnpm run --silent set-var IGDB_CLIENT_ID "$IGDB_CLIENT_ID"
 
       - name: Deploy with Wrangler
         run: pnpm run deploy

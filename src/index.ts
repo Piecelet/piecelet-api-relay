@@ -30,4 +30,8 @@ app.route("/omdb", omdb);
 // Mount the Goodreads relay under /goodreads
 app.route("/goodreads", goodreads);
 
+// Mount the IGDB relay under /igdb
+import igdb from "@/igdb";
+app.route("/igdb", igdb);
+
 export default app;

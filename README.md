@@ -49,6 +49,7 @@ Set the required secrets first (see Secrets).
 Note: Some platforms may restrict overriding headers like `User-Agent`. Validate in deployed Worker if a provider requires an exact UA.
 
 **Secrets & Configuration**
+
 - Required variables are injected into `wrangler.jsonc` at build/deploy time.
 - Keys:
   - `METACRITIC_KEY` — IVA subscription key
@@ -75,6 +76,7 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
 - Local preview cache behavior may differ; confirm on preview/deploy.
 
 **Deploy**
+
 - Deploy: `pnpm deploy`
 - Wrangler config: `wrangler.jsonc`
 - GitHub Actions:

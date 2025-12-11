@@ -49,14 +49,15 @@ jobs:
           IGDB_KEY: ${{ vars.RELAY_IGDB_KEY || secrets.RELAY_IGDB_KEY }}
           IGDB_CLIENT_ID: ${{ vars.RELAY_IGDB_CLIENT_ID || secrets.RELAY_IGDB_CLIENT_ID }}
         run: |
-          pnpm run --silent set-var METACRITIC_KEY "$METACRITIC_KEY"
-          pnpm run --silent set-var METACRITIC_UA "$METACRITIC_UA"
-          pnpm run --silent set-var DOUBAN_FRODO_KEY "$DOUBAN_FRODO_KEY"
-          pnpm run --silent set-var TMDB_KEY "$TMDB_KEY"
-          pnpm run --silent set-var OMDB_KEY "$OMDB_KEY"
-          pnpm run --silent set-var GOODREADS_KEY "$GOODREADS_KEY"
-          pnpm run --silent set-var IGDB_KEY "$IGDB_KEY"
-          pnpm run --silent set-var IGDB_CLIENT_ID "$IGDB_CLIENT_ID"
+          echo "::add-mask::$METACRITIC_KEY"
+          echo "::add-mask::$IGDB_KEY"
+          echo "::add-mask::$IGDB_CLIENT_ID"
+          echo "::add-mask::$TMDB_KEY"
+          echo "::add-mask::$OMDB_KEY"
+          echo "::add-mask::$GOODREADS_KEY"
+          echo "::add-mask::$DOUBAN_FRODO_KEY"
+          echo "::add-mask::$METACRITIC_UA"
+          pnpm run --silent set-var METACRITIC_KEY METACRITIC_UA DOUBAN_FRODO_KEY TMDB_KEY OMDB_KEY GOODREADS_KEY IGDB_KEY IGDB_CLIENT_ID
 
       - name: Deploy with Wrangler
         run: pnpm run deploy

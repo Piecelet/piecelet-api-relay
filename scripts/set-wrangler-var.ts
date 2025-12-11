@@ -7,34 +7,41 @@ const __dirname = path.dirname(__filename);
 
 const wranglerPath = path.resolve(__dirname, "../wrangler.jsonc");
 
-const varName = process.argv[2];
-const varValue = process.argv[3];
+const varNames = process.argv.slice(2);
 
-if (!varName || !varValue) {
-  console.error(
-    "Usage: npx tsx scripts/set-wrangler-var.ts <VAR_NAME> <VAR_VALUE>",
-  );
+if (varNames.length === 0) {
+  console.error("Usage: npx tsx scripts/set-wrangler-var.ts <VAR_NAME_1> [VAR_NAME_2 ...]");
   process.exit(1);
 }
 
 try {
   let content = fs.readFileSync(wranglerPath, "utf8");
-  const placeholder = `<${varName}_HERE>`;
+  let updatedCount = 0;
 
-  if (!content.includes(placeholder)) {
-    console.warn(
-      `Warning: Placeholder "${placeholder}" not found in wrangler.jsonc`,
-    );
-    // Depending on requirement, we might exit or just continue.
-    // The user said "find ... and replace". If not found, nothing to replace.
-    process.exit(0);
+  for (const varName of varNames) {
+    const varValue = process.env[varName];
+    if (!varValue) {
+      console.warn(`Warning: Environment variable "${varName}" is not set. Skipping.`);
+      continue;
+    }
+
+    const placeholder = `<${varName}_HERE>`;
+    if (!content.includes(placeholder)) {
+      console.warn(`Warning: Placeholder "${placeholder}" not found in wrangler.jsonc`);
+      continue;
+    }
+
+    content = content.replaceAll(placeholder, varValue);
+    updatedCount++;
+    console.log(`Updated ${varName}`);
   }
 
-  // Replace all occurrences
-  content = content.replaceAll(placeholder, varValue);
-
-  fs.writeFileSync(wranglerPath, content, "utf8");
-  console.log(`Successfully updated ${varName} in wrangler.jsonc`);
+  if (updatedCount > 0) {
+    fs.writeFileSync(wranglerPath, content, "utf8");
+    console.log(`Successfully updated ${updatedCount} variables in wrangler.jsonc`);
+  } else {
+    console.log("No variables updated.");
+  }
 } catch (error) {
   console.error("Error updating wrangler.jsonc:", error);
   process.exit(1);

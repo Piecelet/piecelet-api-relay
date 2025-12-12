@@ -2,7 +2,7 @@ import { makeProxyRouter } from "@/_lib/proxy";
 
 const metacritic = makeProxyRouter({
   stripPrefix: "/metacritic",
-  upstreamBase: "https://ee.iva-api.com/api/Metacritic",
+  upstreamBase: "https://ee.iva-api.com/api",
   headerMutator: (headers, c) => {
     headers.set("ocp-apim-subscription-key", c.env.METACRITIC_KEY);
     // Optional UA override via env; if not set, remove any incoming UA

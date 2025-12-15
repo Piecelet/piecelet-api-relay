@@ -12,7 +12,7 @@
     "set-var": "npx tsx scripts/set-wrangler-var.ts"
   },
   "dependencies": {
-    "hono": "^4.10.7"
+    "hono": "^4.11.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

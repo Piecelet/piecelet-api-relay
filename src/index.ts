@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import type { Env } from "@/_lib/types/env";
 import metacritic from "@/metacritic";
 import frodo from "@/douban/frodo";
+import rexxar from "@/douban/rexxar";
 import tmdb from "@/tmdb";
 import omdb from "@/omdb";
 import goodreads from "@/goodreads";
@@ -20,6 +21,9 @@ app.route("/metacritic", metacritic);
 
 // Mount the Douban Frodo relay under /douban/frodo
 app.route("/douban/frodo", frodo);
+
+// Mount the Douban Rexxar relay under /douban/rexxar
+app.route("/douban/rexxar", rexxar);
 
 // Mount the TMDB relay under /tmdb
 app.route("/tmdb", tmdb);

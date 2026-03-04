@@ -6,6 +6,7 @@ Targets
 
 - Metacritic (IVA): `/metacritic/*` → `https://ee.iva-api.com/api/Metacritic/*`
 - Douban Frodo: `/douban/frodo/*` → `https://frodo.douban.com/api/*`
+- Douban Rexxar: `/douban/rexxar/*` → `https://m.douban.com/rexxar/api/v2/*`
 - TMDB: `/tmdb/*` → `https://api.themoviedb.org/*`
 - OMDB: `/omdb/*` → `https://www.omdbapi.com/*`
 - Goodreads: `/goodreads/*` → `https://www.goodreads.com/*`
@@ -26,6 +27,9 @@ Set the required secrets first (see Secrets).
   - Pattern: `/metacritic/<path>?<query>` → `https://ee.iva-api.com/api/Metacritic/<path>?<query>`
 - Douban Frodo
   - Pattern: `/douban/frodo/<path>?<query>` → `https://frodo.douban.com/api/<path>?<query>&apiKey=...`
+- Douban Rexxar (no key required)
+  - Pattern: `/douban/rexxar/<path>?<query>` → `https://m.douban.com/rexxar/api/v2/<path>?<query>`
+  - Examples: `/douban/rexxar/movie/1292052`, `/douban/rexxar/tv/25754848`, `/douban/rexxar/book/36402186`, `/douban/rexxar/music/1406522`, `/douban/rexxar/game/10734307`
 - TMDB
   - Pattern: `/tmdb/3/<resource>?<query>` → `https://api.themoviedb.org/3/<resource>?<query>`
 - OMDB
@@ -96,6 +100,7 @@ Note: Some platforms may restrict overriding headers like `User-Agent`. Validate
 - `src/index.ts` — App mount points and health route
 - `src/_lib/proxy.ts` — Shared proxy + cache core (`makeProxyRouter`)
 - `src/goodreads/index.ts` — Goodreads proxy module
+- `src/douban/rexxar/index.ts` — Douban Rexxar proxy module
 - `src/_lib/types/env.ts` — Env typings (`METACRITIC_KEY`, `DOUBAN_FRODO_KEY`, `TMDB_KEY`, `OMDB_KEY`, optional `METACRITIC_UA`)
 
 **Path Aliases**
